@@ -24,28 +24,28 @@ const Login = ({ onSwitchToRegister }) => {
       {error && <div style={{ backgroundColor: '#fadbd8', color: '#a93226', padding: '12px', borderRadius: '8px', marginBottom: '16px', fontSize: '13px', border: '1px solid #f1b3ac' }}>{error}</div>}
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '16px' }}>
-          <label style={{ display: 'block', fontWeight: '600', marginBottom: '6px', color: '#2c3e50' }}>Username</label>
+          <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#2c3e50' }}>Username</label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter your username"
-            style={{ width: '100%', marginRight: 0 }}
+            style={{ width: '100%', marginRight: 0, boxSizing: 'border-box' }}
           />
         </div>
         <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', fontWeight: '600', marginBottom: '6px', color: '#2c3e50' }}>Password</label>
+          <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#2c3e50' }}>Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
-            style={{ width: '100%', marginRight: 0 }}
+            style={{ width: '100%', marginRight: 0, boxSizing: 'border-box' }}
           />
         </div>
         <button type="submit" style={{ width: '100%' }}>Sign In</button>
         <p style={{ marginTop: '16px', fontSize: '13px', textAlign: 'center', color: '#7f8c8d' }}>
-          Don't have an account? <span style={{ color: '#3498db', cursor: 'pointer', textDecoration: 'underline', fontWeight: '600' }} onClick={onSwitchToRegister}>Register here</span>
+          Don't have an account? <span style={{ color: '#8b5cf6', cursor: 'pointer', textDecoration: 'underline', fontWeight: '600' }} onClick={onSwitchToRegister}>Register here</span>
         </p>
       </form>
     </div>

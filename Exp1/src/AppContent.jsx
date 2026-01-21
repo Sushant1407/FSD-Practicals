@@ -11,7 +11,18 @@ const AppContent = () => {
   return (
     <div style={{ fontFamily: 'inherit' }}>
       <header>
-        <h1 style={{ letterSpacing: '0.5px' }}>Shopping Store</h1>
+        <h1 style={{ 
+          letterSpacing: '0.5px', 
+          background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          fontWeight: '700',
+          fontSize: '32px',
+          textShadow: '0 2px 10px rgba(139, 92, 246, 0.1)'
+        }}>
+          🛍️ Shopping Store
+        </h1>
         {isLoggedIn && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
             <span style={{ fontWeight: '500' }}>Welcome, <strong>{user.name}</strong></span>
