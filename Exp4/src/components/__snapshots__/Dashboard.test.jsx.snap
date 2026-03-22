@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dashboard Component Snapshots matches snapshot in empty state 1`] = `
+<div
+  className="dashboard-state empty"
+>
+  No data available.
+</div>
+`;
+
+exports[`Dashboard Component Snapshots matches snapshot in error state 1`] = `
+<div
+  className="dashboard-state error"
+>
+  Error: 
+  Failed to fetch data.
+</div>
+`;
+
+exports[`Dashboard Component Snapshots matches snapshot in loaded state 1`] = `
+<div
+  className="dashboard"
+>
+  <h2>
+    Dashboard
+  </h2>
+  <ul
+    className="dashboard-list"
+  >
+    <li
+      className="dashboard-item"
+    >
+      Item 1
+    </li>
+    <li
+      className="dashboard-item"
+    >
+      Item 2
+    </li>
+  </ul>
+</div>
+`;
+
+exports[`Dashboard Component Snapshots matches snapshot in loading state 1`] = `
+<div
+  className="dashboard-state loading"
+>
+  Loading dashboard data...
+</div>
+`;
