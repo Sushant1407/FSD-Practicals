@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student API</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#f4f7ff;--surface:#ffffff;--surface2:#ecf2ff;--border:#cad8fb;--accent:#3f66e0;--accent2:#5a7df0;--accent3:#2f53c7;--text:#1f2b4d;--muted:#5b6f9e;--danger:#2f53c7;--success:#3f66e0}
+    body{background:linear-gradient(180deg,#f9fbff 0%,#edf3ff 100%);color:var(--text);font-family:'DM Sans',sans-serif;padding:40px 24px}
+    .app{max-width:1000px;margin:0 auto}
+    h1{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+    .subtitle{color:var(--muted);font-size:0.9rem;margin-bottom:40px}
+    .form-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:32px;position:relative;overflow:hidden}
+    .form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+    .form-title{font-family:'Syne',sans-serif;font-size:0.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr 100px auto;gap:12px;align-items:end}
+    label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:6px}
+    input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none}
+    input:focus{border-color:var(--accent)}
+    button{padding:10px 20px;border-radius:10px;border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:.8rem;cursor:pointer;transition:all .2s}
+    .btn-add{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;margin-top:20px}
+    .btn-add:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(63,102,224,.28)}
+    .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+    .t-head{display:grid;grid-template-columns:55px 1fr 1fr 70px 150px;padding:12px 20px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+    .t-row{display:grid;grid-template-columns:55px 1fr 1fr 70px 150px;padding:16px 20px;border-bottom:1px solid var(--border);align-items:center;transition:background .15s}
+    .t-row:last-child{border-bottom:none}
+    .t-row:hover{background:var(--surface2)}
+    .id{font-family:'Syne',sans-serif;font-size:.8rem;color:var(--muted)}
+    .age{font-family:'Syne',sans-serif;font-weight:700;color:var(--accent3)}
+    .email{color:var(--muted);font-size:.88rem}
+    .actions{display:flex;gap:8px}
+    .btn-edit{padding:5px 12px;border-radius:7px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s}
+    .btn-edit:hover{background:var(--accent);color:#fff}
+    .btn-del{padding:5px 12px;border-radius:7px;border:1px solid var(--danger);background:transparent;color:var(--danger);font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s}
+    .btn-del:hover{background:var(--danger);color:#fff}
+    .empty{padding:50px;text-align:center;color:var(--muted)}
+    .toast{position:fixed;bottom:28px;right:28px;padding:12px 22px;border-radius:10px;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;z-index:99;animation:up .3s ease}
+    .t-ok{background:var(--success);color:#ffffff}
+    .t-err{background:var(--danger);color:#fff}
+    @keyframes up{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <h1>Student REST API</h1>
+  <p class="subtitle">Full CRUD Dashboard — Spring Boot</p>
+
+  <div class="form-card">
+    <div class="form-title">➕ Add New Student</div>
+    <div class="form-row">
+      <div><label>Name</label><input id="f-name" placeholder="Sushant"></div>
+      <div><label>Email</label><input id="f-email" placeholder="sushant@example.com"></div>
+      <div><label>Age</label><input id="f-age" type="number" placeholder="20"></div>
+    </div>
+    <button class="btn-add" onclick="addStudent()">Add Student</button>
+  </div>
+
+  <div class="table-wrap">
+    <div class="t-head"><span>ID</span><span>Name</span><span>Email</span><span>Age</span><span>Actions</span></div>
+    <div id="list"></div>
+  </div>
+</div>
+
+<script>
+const API = '/api/students';
+
+async function load() {
+  const res = await fetch(API);
+  const data = await res.json();
+  const list = document.getElementById('list');
+  if (!data.length) { list.innerHTML = '<div class="empty">No students yet. Add one from above! 👆</div>'; return; }
+  list.innerHTML = data.map(s => `
+    <div class="t-row">
+      <div class="id">#${s.id}</div>
+      <div>${s.name}</div>
+      <div class="email">${s.email}</div>
+      <div class="age">${s.age}</div>
+      <div class="actions">
+        <button class="btn-edit" onclick="editStudent(${s.id},'${s.name}','${s.email}',${s.age})">Edit</button>
+        <button class="btn-del" onclick="deleteStudent(${s.id})">Del</button>
+      </div>
+    </div>`).join('');
+}
+
+async function addStudent() {
+  const name = document.getElementById('f-name').value;
+  const email = document.getElementById('f-email').value;
+  const age = parseInt(document.getElementById('f-age').value);
+  if (!name || !email || !age) return toast('Please fill all fields!', false);
+  await fetch(API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name,email,age}) });
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-email').value = '';
+  document.getElementById('f-age').value = '';
+  toast('Student added successfully! ✓');
+  load();
+}
+
+async function deleteStudent(id) {
+  await fetch(`${API}/${id}`, { method:'DELETE' });
+  toast('Student deleted successfully! ✓');
+  load();
+}
+
+function editStudent(id, name, email, age) {
+  const newName = prompt('Name:', name);
+  if (!newName) return;
+  const newEmail = prompt('Email:', email);
+  if (!newEmail) return;
+  const newAge = prompt('Age:', age);
+  if (!newAge) return;
+  fetch(`${API}/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name:newName, email:newEmail, age:parseInt(newAge)}) })
+    .then(() => { toast('Student updated successfully! ✓'); load(); });
+}
+
+function toast(msg, ok=true) {
+  const t = document.createElement('div');
+  t.className = 'toast ' + (ok ? 't-ok' : 't-err');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+load();
+</script>
+</body>
+</html>
